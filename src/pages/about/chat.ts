@@ -1,5 +1,5 @@
 import {Page, Modal, NavController} from 'ionic-angular';
-import {ElementRef, OnInit} from 'angular2/core';
+import {ElementRef, OnInit} from 'angular/core';
 
 import {UsersPage} from '../users/users';
 

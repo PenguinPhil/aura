@@ -2,7 +2,6 @@ import {Injectable, EventEmitter} from 'angular2/core';
 
 import {WebRTCConfig} from './webrtc.config';
 
-
 @Injectable()
 export class WebRTCService {
 

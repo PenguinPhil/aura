@@ -1,24 +1,23 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import {Page, Modal, NavController} from 'ionic-angular';
-import {ElementRef, OnInit} from 'angular/core';
+import {ElementRef, OnInit} from '@angular/core';
+import {User, OtherUser} from '../../common/auth.service';
 import {WebRTCService} from '../../common/webrtc.service';
 
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html'
 })
-export class ChatPage implements OnInit {
+export class AboutPage implements OnInit {
     myVideo: HTMLMediaElement;
     otherVideo: HTMLMediaElement;
     
     me: User = {};
     otherUser: OtherUser = new OtherUser();
     
-    constructor(private userService: UserService, private authService: AuthService, private webRTCService: WebRTCService,
-        private nav: NavController, private elRef: ElementRef) {
-            
-        this.me = authService.user;
+    constructor(public navCtrl: NavController, public elRef: ElementRef) {
+      
     }
     
     ngOnInit(): any {
@@ -26,9 +25,9 @@ export class ChatPage implements OnInit {
         this.myVideo = this.elRef.nativeElement.querySelector('#my-video');
         this.otherVideo = this.elRef.nativeElement.querySelector('#other-video');
         //
-        this.webRTCService.init(this.myVideo, this.otherVideo, () => {
-            console.log('I\'m calling');
-        });
+        //this.webRTCService.init(this.myVideo, this.otherVideo, () => {
+            //console.log('I\'m calling');
+        //});        **********************UNCOMMENT */**/
     }
     
     getOtherUserName(): string {

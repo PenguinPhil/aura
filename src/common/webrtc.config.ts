@@ -22,15 +22,11 @@ export class WebRTCConfig {
 
     getPeerJSOption(): PeerJs.PeerJSOption {
         return {
-            // Set API key for cloud server (you don't need this if you're running your own.
-            key: this.key,
-
-            // Set highest debug level (log everything!).
+            host: 'https://aura-space.herokuapp.com/',
+            key: 'peerjs',
             debug: 3,
-            // Set it to false because of:
-            // > PeerJS:  ERROR Error: The cloud server currently does not support HTTPS. 
-            // > Please run your own PeerServer to use HTTPS.
-            secure: false,
+            secure: true,
+            port: 443,
 
             config: {
                 iceServers: [
@@ -44,7 +40,7 @@ export class WebRTCConfig {
     /**********************/
 
     audio: boolean = true;
-    video: boolean = false;
+    video: boolean = true;
 
     getMediaStreamConstraints(): MediaStreamConstraints {
         return <MediaStreamConstraints> {
