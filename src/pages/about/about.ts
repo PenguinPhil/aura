@@ -16,8 +16,11 @@ export class AboutPage implements OnInit {
     me: User = {};
     otherUser: OtherUser = new OtherUser();
     
-    constructor(public navCtrl: NavController, public elRef: ElementRef) {
-      
+    constructor(private webRTCService: WebRTCService,
+        private nav: NavController, private elRef: ElementRef) {
+            
+        this.me = authService.user;
+ 
     }
     
     ngOnInit(): any {
@@ -25,9 +28,9 @@ export class AboutPage implements OnInit {
         this.myVideo = this.elRef.nativeElement.querySelector('#my-video');
         this.otherVideo = this.elRef.nativeElement.querySelector('#other-video');
         //
-        //this.webRTCService.init(this.myVideo, this.otherVideo, () => {
-            //console.log('I\'m calling');
-        //});        **********************UNCOMMENT */**/
+        this.webRTCService.init(this.myVideo, this.otherVideo, () => {
+            console.log('I\'m calling');
+        });
     }
     
     getOtherUserName(): string {
