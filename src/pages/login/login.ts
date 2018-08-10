@@ -1,47 +1,76 @@
-import {Page, ViewController} from 'ionic-angular';
-import {Inject} from 'angular/core';
+import { Component } from '@angular/core'
 
-import {AngularFire, FirebaseListObservable, FirebaseObjectObservable, FirebaseRef} from 'angularfire2';
-import {Observable} from 'rxjs/Observable';
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database'
+import { AngularFireAuth } from 'angularfire2/auth'
+import { Observable } from 'rxjs/Observable'
+import * as firebase from 'firebase/app'
 
-@Page({
-  templateUrl: 'build/pages/login/login.html'
+import { NavController, NavParams, AlertController, MenuController, LoadingController, Platform, ToastController, Tabs } from 'ionic-angular'
+import { TabsPage } from '../tabs/tabs'
+import { Events } from 'ionic-angular'
+
+import { AuthService } from '../../common/auth.service'
+
+import 'rxjs/Rx'
+
+/**
+ * Generated class for the LoginPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
+
+@Component({
+  selector: 'page-login',
+  templateUrl: 'login.html'
 })
 export class LoginPage {
+  private currentUser
+  private gUser: any = {}
+  private authState
+  private user: any = { uid: 'something' }
+  private email: string = ''
+  private password: string = ''
+  private password2: string = ''
 
-    username: string = '';
-    ref: Firebase;
-    users: FirebaseListObservable<any[]>;
-    // 
-    constructor(private af: AngularFire, private viewCtrl: ViewController, @Inject(FirebaseRef) ref:Firebase){
-        this.users = this.af.list('/users');
-        this.ref = ref;
-    }
+  public cellNo: string
+  public userData
+  private pass: string
+  private users
+  private authSub: any;
 
-    login(): void {
-        console.log(`Adding user to users in chat room: ${this.username} `);
-        
-        let users: Firebase = this.ref.child('/users');
-        // We need to check is user exists in DB
-        users.child(this.username).on('value', (snaphot:FirebaseDataSnapshot) => {
-            let name = snaphot.val();
-            console.log(name);
-            if (name) {
-                // User exists
-                this.viewCtrl.dismiss(this.username);
-            } else {
-                // User must be created
-                // push(value?: any, onComplete?: (error: any) => void): FirebaseWithPromise<void>;
-                users.push({
-                    name: this.username
-                }).then((value: any) => {
-                    this.viewCtrl.dismiss(this.username);
-                }, (error: any) => {
-                    console.log('Error', error);
-                });
-            }
-        }, (error: any) => {
-            console.log('Error', error);
-        });
-    }
+  constructor(public navCtrl: NavController, private events: Events, private authService: AuthService) { //
+      
+  }
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad LoginPage')
+  }
+
+  gg () {
+    this.authService.googleLogin()
+  }
+
+  auto () {
+      this.proceedToRoot()
+  }
+
+  signin () {
+    this.authService.emailLogin(this.email, this.password)
+  }
+
+  subscribeToAuthState () {
+    this.events.subscribe('globals:update', (user, type) => {
+      this.user = user
+      this.gUser = user
+      this.proceedToRoot()
+    })
+  }
+
+  proceedToRoot () {
+    this.navCtrl.setRoot(TabsPage, {
+        user: this.user,
+        guser: this.gUser
+    })
+  }
 }

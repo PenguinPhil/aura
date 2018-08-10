@@ -1,21 +1,14 @@
-import {Page, ViewController, NavController} from 'ionic-angular';
-import {COMMON_DIRECTIVES} from 'angular/common';
+import { ViewController, NavController } from 'ionic-angular';
 
-import {AngularFire, FirebaseRef, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
+import { User, OtherUser, AuthService } from '../../common/auth.service';
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database'
 
-import {UserService} from '../../common/user.service';
-import {User, OtherUser, AuthService} from '../../common/auth.service';
-
-@Page({
-    templateUrl: 'build/pages/users/users.html',
-    directives: [COMMON_DIRECTIVES]
-})
 export class UsersPage {
 
     me: User;
-    users: FirebaseListObservable<any>;
+    users: AngularFireList<any>;
 
-    constructor(private userService: UserService, private authService: AuthService,
+    constructor(private userService, private authService: AuthService,
         private viewCtrl: ViewController) {
         this.me = authService.user;
         this.users = userService.asList();
