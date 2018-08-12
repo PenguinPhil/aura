@@ -1,21 +1,25 @@
+import { Component } from '@angular/core'
 import { ViewController, NavController } from 'ionic-angular';
 
-import { User, OtherUser, AuthService } from '../../common/auth.service';
+import { AuthService, User, OtherUser } from '../../common/auth.service';
+import { UserService } from '../../common/user.service';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database'
 
+@Component({
+    selector: 'page-users',
+    templateUrl: 'users.html'
+})
 export class UsersPage {
+  me: any;
+  users: AngularFireList<any>;
 
-    me: User;
-    users: AngularFireList<any>;
+  constructor(private authService: AuthService, private userService: UserService,
+    private viewCtrl: ViewController) {
+    this.me = authService.user;
+    this.users = userService.getUsers();
+  }
 
-    constructor(private userService, private authService: AuthService,
-        private viewCtrl: ViewController) {
-        this.me = authService.user;
-        this.users = userService.asList();
-    }
-
-    chooseUser(user: any) {
-        console.log('Choose user', user);
-        this.viewCtrl.dismiss(new OtherUser(user.$value, user.$key));
-    }
+  chooseUser(user: any) {
+    this.viewCtrl.dismiss(new OtherUser(user.$value, user.$key));
+  }
 }

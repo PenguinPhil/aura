@@ -3,7 +3,11 @@
 </ion-navbar>
 
 <ion-content class="has-header has-footer padding content-stable">
+    <div text-center padding>
+        <h1> Users </h1>
+        <p> Please select a user to call from the list below: </p>
+    </div>
     <ion-list>
-        <ion-item *ngFor="#user of users | async" (click)="chooseUser(user)">{{user.$value}}</ion-item>
+        <ion-item *ngFor="let user of users | async" (click)="chooseUser(user)">{{user.$value}}</ion-item>
     </ion-list>
 </ion-content>

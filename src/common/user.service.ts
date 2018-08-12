@@ -13,7 +13,7 @@ import { Events } from 'ionic-angular'
 @Injectable()
 export class UserService {
 
-    public user: any
+  public user: any
   public firebaseUser: any
 
   public authState: any
@@ -23,140 +23,16 @@ export class UserService {
   constructor(private googlePlus: GooglePlus,
     private toastCtrl: ToastController, public loadingCtrl: LoadingController, 
     private platform: Platform, private nativeStorage: NativeStorage,
-    public afAuth: AngularFireAuth, private events: Events) {
-    console.log('Hello AuthProvider Provider');
-    this.authState = this.afAuth.authState
-    this.subscribeToAuthState()
+    public af: AngularFireDatabase, private events: Events) {
+      console.log('Hello AuthProvider Provider');
   }
 
-  // AUTHSTATE SUBSCRIPTION
-  subscribeToAuthState () {
-    this.authSub = this.authState.subscribe(user => {
-      if (user) {
-        this.user = user
-        this.nativeStorage.clear()
-
-        const type = firebase.database().ref(`/users_global/${user.uid}/type`).once('value').then(res => {
-          if (res.val() !== null) {
-            this.type = res.val()
-
-            this.nativeStorage.setItem('user-info', { 
-              user: user,
-              type: res
-            })
-
-            this.events.publish('globals:update', this.user, this.type)
-            this.loader.dismiss()
-          } else {
-            this.toast('You have not yet created an account. Please register')
-            this.loader.dismiss()
-          }
-        })
-      } else {
-        this.user = null
-      }
-    })
+  getUsers () {
+    return this.af.list(`/users`).valueChanges()
   }
 
-  logout() {
-    this.authSub.unsubcribe()
-    this.afAuth.auth.signOut()
-    this.googlePlus.logout()
-  }
-
-  getType() {
-    /*return new Promise((resolve, reject) => {
-      firebase.database().ref(`users_global/${this.user.uid}`).once('value').then(res => {
-        if (res.val()) {
-          resolve(res.val().type)
-        } else {
-          reject('User type not found')
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })*/
-    return this.type
-  }
-
-  // LOGIN METHODS
-  googleLogin () {
-    this.loader.present()
-    this.googlePlus.login({
-      'webClientId': '745996686081-modil5qum4720gdi6ma9p2gl6b1vflaf.apps.googleusercontent.com',
-      'offline': true
-    }).then((success) =>{
-      this.resolveGoogleLogin(success)
-    }).catch((err) => {
-      this.rejectGoogleLogin(err)
-    })
-  }
-
-  emailLogin (email, password) {
-    this.loader.present()
-    const cleanEmail = email.split(' ').join('')
-    let type = ''
-
-    firebase.auth().signInWithEmailAndPassword(cleanEmail, password).then(user => {
-      this.authState = this.afAuth.authState
-      this.user = user
-    }).catch(err => {
-      this.toast('Cannot sign you in')
-      this.loader.dismiss()
-      this.toast(err)
-    })
-  }
-
-  // LOGIN RESOLVERS
-  resolveGoogleLogin (result) {
-    this.loader.dismiss()
-    this.firebaseSocialAuth(result)
-  }
-
-  rejectGoogleLogin (err) {
-    this.loader.dismiss()
-    this.toast(`We could not log you in at this time. Code: ${err}`)
-  }
-
-  // SIGN UP METHODS
-  emailRegister(email, password, type) {
-    this.loader.present()
-    const cleanEmail = email.split(' ').join('')
-
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(cleanEmail, password)
-      .then( user => {
-        this.user = user
-        
-        this.events.publish('globals:update', user, type)
-        this.loader.dismiss()
-      }).catch(err => {
-        this.loader.dismiss()
-        this.toast(err.message)
-      })
-  }
-
-  // FIREBASE AUTHORIZATION
-  firebaseSocialAuth (successuser, type = 'gg') {
-    this.firebaseUser = successuser
-    let credential
-
-    if(type === 'gg') {
-      credential = firebase.auth.GoogleAuthProvider.credential(
-              successuser.idToken)
-    } else {
-      credential = successuser
-    }
-
-    let env = this
-
-    firebase.auth().signInWithCredential(credential).then((result) => {
-      var user = result
-      this.user = user
-      env.loader.present()
-      env.authState = env.afAuth.authState
-    })
+  getUser (uid) {
+    return firebase.database().ref(`/users/${uid}`).once('value')
   }
 
   // ALERT CONTROLLERS

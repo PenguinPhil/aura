@@ -21,22 +21,14 @@ export class OtherUser {
     constructor(public name: string = '', public id: string = '') {}
 
     notEmpty(): boolean {
-        return this.isPresent(this.name) && this.isPresent(this.id) && this.name.length > 0 && this.id.length > 0;
-    }
-
-    isPresent(value) {
-        if (value) {
-            return value.length > 0
-        }
-
-        return false     
+      return this.name.length > 0 && this.id.length > 0;
     }
 }
 
 @Injectable()
 export class AuthService {
 
-    public user: any
+  public user: any
   public firebaseUser: any
 
   public authState: any
@@ -76,7 +68,9 @@ export class AuthService {
           }
         })
       } else {
-        this.user = null
+        this.user = {
+            id: 'some-id'
+        }
       }
     })
   }
