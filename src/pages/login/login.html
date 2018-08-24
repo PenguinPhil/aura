@@ -1,19 +1,43 @@
-<ion-navbar *navbar>
-    <button menuToggle>
-        <ion-icon name="menu"></ion-icon>
+<!--
+  Generated template for the LogoutPage page.
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-header no-border>
+  <ion-navbar color="primary">
+    <ion-title></ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding color="primary" class="bg" text-center>
+  <div class="display" padding>
+    <img src="assets/img/random-image.png" class="img-logout"/>
+
+    <ion-item no-padding padding-horizontal>
+      <ion-input type="text" [(ngModel)]="email" placeholder="Email address"></ion-input>
+    </ion-item>
+
+    <ion-item no-padding padding-horizontal>
+      <ion-input type="password" [(ngModel)]="password" placeholder="Password"></ion-input>
+    </ion-item>
+
+    <button padding class="sign" ion-button color="accent3" outline no-border (click)="auto()">
+        Log in
     </button>
-    <ion-title>Authentication</ion-title>
-</ion-navbar>
 
-<ion-content padding has-header>
-  <div class="list">
-    <label class="item item-input">
-      <span class="input-label">Name</span>
-      <input type="text" [(ngModel)]="username">
-    </label>
+    <p class="terms" (click)="reset()"> Forgot your password? <a> Reset password </a> </p>
+
+    <ion-grid no-padding>
+      <ion-row no-padding> <p class="text">or sign in with</p> </ion-row>
+      <ion-row no-padding>
+        <ion-col col-12 text-center>
+          <button class="btn" ion-button icon-left color="gg" (click)="gg()">
+            <ion-icon name="logo-google"></ion-icon>
+            Google
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
-
-  <button block (click)="login()">
-    Login
-  </button>
 </ion-content>

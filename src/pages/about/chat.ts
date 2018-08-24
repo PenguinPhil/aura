@@ -1,15 +1,12 @@
-import {Page, Modal, NavController} from 'ionic-angular';
-import {ElementRef, OnInit} from 'angular/core';
+import { ModalController, NavController} from 'ionic-angular';
+import {ElementRef, OnInit} from '@angular/core';
 
 import {UsersPage} from '../users/users';
 
 import {UserService} from '../../common/user.service';
-import {User, OtherUser, AuthService} from '../../common/auth.service';
+import { User, OtherUser, AuthService } from '../../common/auth.service';
 import {WebRTCService} from '../../common/webrtc.service';
 
-@Page({
-    templateUrl: 'build/pages/chat/chat.html'
-})
 export class ChatPage implements OnInit {
     myVideo: HTMLMediaElement;
     otherVideo: HTMLMediaElement;
@@ -18,7 +15,7 @@ export class ChatPage implements OnInit {
     otherUser: OtherUser = new OtherUser();
     
     constructor(private userService: UserService, private authService: AuthService, private webRTCService: WebRTCService,
-        private nav: NavController, private elRef: ElementRef) {
+        private nav: NavController, private elRef: ElementRef, private modalCtrl: ModalController) {
             
         this.me = authService.user;
     }
@@ -43,12 +40,13 @@ export class ChatPage implements OnInit {
     
     chooseOtherUser() {
         console.log('Choose other user');
-        let modal = Modal.create(UsersPage);
-        modal.onDismiss((value: any) => {
+        let modal = this.modalCtrl.create(UsersPage);
+        modal.onDidDismiss((value: any) => {
             console.log('Selected user', value);
             this.otherUser = value;
         });
-        this.nav.present(modal);
+
+        modal.present();
     }
     
     startCall() {

@@ -1,28 +1,25 @@
-import {Page, ViewController, NavController} from 'ionic-angular';
-import {COMMON_DIRECTIVES} from 'angular/common';
+import { Component } from '@angular/core'
+import { ViewController, NavController } from 'ionic-angular';
 
-import {AngularFire, FirebaseRef, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2';
+import { AuthService, User, OtherUser } from '../../common/auth.service';
+import { UserService } from '../../common/user.service';
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database'
 
-import {UserService} from '../../common/user.service';
-import {User, OtherUser, AuthService} from '../../common/auth.service';
-
-@Page({
-    templateUrl: 'build/pages/users/users.html',
-    directives: [COMMON_DIRECTIVES]
+@Component({
+    selector: 'page-users',
+    templateUrl: 'users.html'
 })
 export class UsersPage {
+  me: any;
+  users: AngularFireList<any>;
 
-    me: User;
-    users: FirebaseListObservable<any>;
+  constructor(private authService: AuthService, private userService: UserService,
+    private viewCtrl: ViewController) {
+    this.me = authService.user;
+    this.users = userService.getUsers();
+  }
 
-    constructor(private userService: UserService, private authService: AuthService,
-        private viewCtrl: ViewController) {
-        this.me = authService.user;
-        this.users = userService.asList();
-    }
-
-    chooseUser(user: any) {
-        console.log('Choose user', user);
-        this.viewCtrl.dismiss(new OtherUser(user.$value, user.$key));
-    }
+  chooseUser(user: any) {
+    this.viewCtrl.dismiss(new OtherUser(user.$value, user.$key));
+  }
 }
